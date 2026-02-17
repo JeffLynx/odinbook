@@ -1,5 +1,17 @@
 <h1>Your Feed</h1>
 
+<%= form_with model: @post, url: posts_path do |f| %>
+  <div>
+    <%= f.text_area :body, placeholder: "What's on your mind?", rows: 3 %>
+  </div>
+
+  <div>
+    <%= f.submit "Post" %>
+  </div>
+<% end %>
+
+<hr>
+
 <% if @posts.any? %>
   <% @posts.each do |post| %>
     <article style="border: 1px solid #ddd; padding: 1rem; margin-bottom: 1rem;">

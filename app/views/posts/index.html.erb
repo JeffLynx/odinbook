@@ -1,0 +1,18 @@
+<h1>Your Feed</h1>
+
+<% if @posts.any? %>
+  <% @posts.each do |post| %>
+    <article style="border: 1px solid #ddd; padding: 1rem; margin-bottom: 1rem;">
+      <strong><%= post.user.email %></strong>
+      <p><%= post.body %></p>
+
+      <small>
+        <%= time_ago_in_words(post.created_at) %> ago
+        <%= pluralize(post.likes.size, "like") %>
+        <%= pluralize(post.comments.size, "comment") %>
+      </small>
+    </article>
+  <% end %>
+<% else %>
+  <p>Your feed is empty. Follow someone or post something!</p>
+<% end %>

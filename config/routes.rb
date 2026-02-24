@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get "users/index"
   get "follows/create"
   get "follows/destroy"
   get "posts/index"
@@ -10,6 +11,8 @@ Rails.application.routes.draw do
   end
 
   resources :follows, only: [ :create, :destroy ]
+
+  resources :users, only: [ :index, :show ]
 
   get "up" => "rails/health#show", as: :rails_health_check
 

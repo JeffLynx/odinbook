@@ -1,0 +1,61 @@
+<div class="max-w-2xl mx-auto">
+  <div class="bg-white border border-gray-300 rounded-lg p-6 mb-6">
+    <div class="flex items-start justify-between">
+      <div>
+        <h1 class="text-3xl font-bold"><%= @user.email %></h1>
+        <% if @user.profile&.bio %>
+          <p class="text-gray-600 mt-2"><%= @user.profile.bio %></p>
+        <% end %>
+        <div class="mt-4 text-sm text-gray-500">
+          <span><strong><%= @user.posts.count %></strong> posts</span>
+          <span class="ml-4"><strong><%= @user.following.count %></strong> following</span>
+          <span class="ml-4"><strong><%= @user.followers.count %></strong> followers</span>
+        </div>
+      </div>
+
+      <% if current_user != @user %>
+        <div class="flex gap-2">
+          <% if current_user.following?(@user) %>
+            <% follow = current_user.sent_follows.find_by(followed: @user, status: :accepted) %>
+            <%= button_to "Unfollow",
+              follow_path(follow),
+              method: :delete,
+              class: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded",
+              data: { turbo_confirm: "Unfollow #{@user.email}?" } %>
+          
+          <% elsif current_user.requested_follow?(@user) %>
+            <button disabled class="bg-gray-300 text-gray-600 px-4 py-2 rounded cursor-not-allowed">
+              Request Pending
+            </button>
+          
+          <% else %>
+            <%= button_to "Follow",
+              follows_path(followed_id: @user.id),
+              method: :post,
+              class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded" %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <div>
+    <h2 class="text-2xl font-bold mb-4">Posts</h2>
+    <% if @posts.any? %>
+      <% @posts.each do |post| %>
+        <article class="border-l-4 border-blue-600 bg-white rounded-lg p-4 mb-4">
+          <p class="text-gray-800"><%= post.body %></p>
+          <small class="text-gray-500">
+            <%= time_ago_in_words(post.created_at) %> ago
+            · <%= pluralize(post.likes.count, "like") %>
+            · <%= pluralize(post.comments.count, "comment") %>
+          </small>
+          <br>
+          <%= link_to "View post", post_path(post), class: "text-blue-600 hover:underline text-sm mt-2 inline-block" %>
+        </article>
+      <% end %>
+    <% else %>
+      <p class="text-gray-600">No posts yet.</p>
+    <% end %>
+  </div>
+</div>

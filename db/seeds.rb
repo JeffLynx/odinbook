@@ -29,10 +29,6 @@ post1 = alice.posts.create!(body: "Hello from Alice!")
 post2 = bob.posts.create!(body: "Bob has entered the chat.")
 post3 = cara.posts.create!(body: "Cara testing seeds.")
 
-# Follows
-Follow.create!(follower: alice, followed: bob, status: :accepted)
-Follow.create!(follower: bob, followed: cara, status: :pending)
-
 # Likes
 Like.create!(user: bob, post: post1)
 Like.create!(user: cara, post: post2)

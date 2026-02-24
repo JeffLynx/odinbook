@@ -3,7 +3,7 @@ class CreateFollows < ActiveRecord::Migration[8.1]
     create_table :follows do |t|
       t.references :follower, null: false, foreign_key: { to_table: :users }
       t.references :followed, null: false, foreign_key: { to_table: :users }
-      t.integer :status, null: false, default: 0
+      t.integer :status, default: 0, null: false
 
       t.timestamps
     end

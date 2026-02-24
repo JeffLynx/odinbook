@@ -1,22 +1,41 @@
-<div>
-  <h1>Discover Users</h1>
+<div class="max-w-2xl mx-auto">
+  <h1 class="text-3xl font-bold mb-6">Discover Users</h1>
 
-  <% @users.each do |user| %>
-    <div style="border: 1px solid #ddd; padding: 0.5rem; margin-bottom: 0.5rem;">
-      <strong><%= user.email %></strong>
+  <% if @users.any? %>
+    <% @users.each do |user| %>
+      <div class="bg-white border border-gray-300 rounded-lg p-4 mb-4 flex items-center justify-between">
+        <div>
+          <strong class="text-lg"><%= link_to user.email, user_path(user), class: "text-blue-600 hover:underline" %></strong>
+          <% if user.profile&.bio %>
+            <p class="text-sm text-gray-600 mt-1"><%= truncate(user.profile.bio, length: 100) %></p>
+          <% end %>
+          <p class="text-xs text-gray-500 mt-2"><%= pluralize(user.posts.count, "post") %> · <%= pluralize(user.followers.count, "follower") %></p>
+        </div>
 
-      <% if current_user.following?(user) %>
-        <%= button_to "Unfollow",
-          follow_path(current_user.sent_follows.find_by(followed: user)),
-          method: :delete %>
-      
-      <% elsif current_user.requested_follow?(user) %>
-        <em>Follow request sent</em>
-      
-      <% else %>
-        <%= button_to "Follow",
-          follows_path(followed_id: user.id),
-          method: :post %>
-      <% end %>
-    </div>
+        <div>
+          <% if current_user.following?(user) %>
+            <% follow = current_user.sent_follows.find_by(followed: user, status: :accepted) %>
+            <%= button_to "Unfollow",
+              follow_path(follow),
+              method: :delete,
+              class: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded",
+              data: { turbo_confirm: "Unfollow #{user.email}?" } %>
+          
+          <% elsif current_user.requested_follow?(user) %>
+            <button disabled class="bg-gray-300 text-gray-600 px-4 py-2 rounded cursor-not-allowed">
+              Request Pending
+            </button>
+          
+          <% else %>
+            <%= button_to "Follow",
+              follows_path(followed_id: user.id),
+              method: :post,
+              class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded" %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <p class="text-gray-600">No other users found.</p>
   <% end %>
+</div>

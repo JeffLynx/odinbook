@@ -1,0 +1,24 @@
+<div class="max-w-2xl mx-auto">
+  <h1 class="text-3xl font-bold mb-6">Follow Requests</h1>
+
+  <% if @received_follow_requests.any? %>
+    <% @received_follow_requests.each do |follow| %>
+      <div class="bg-white border border-gray-300 rounded-lg p-4 mb-4 flex items-center justify-between">
+        <div>
+          <strong class="text-lg"><%= link_to follow.follower.email, user_path(follow.follower), class: "text-blue-600 hover:underline" %></strong>
+          <p class="text-sm text-gray-500">wants to follow you</p>
+        </div>
+
+        <div class="flex gap-2">
+          <%= button_to "Accept", accept_follow_path(follow), method: :patch, class: "bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded" %>
+          <%= button_to "Reject", reject_follow_path(follow), method: :delete, class: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded" %>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
+      <p class="text-gray-600">You don't have any pending follow requests.</p>
+      <%= link_to "Discover users", users_path, class: "text-blue-600 hover:underline mt-2 inline-block" %>
+    </div>
+  <% end %>
+</div>

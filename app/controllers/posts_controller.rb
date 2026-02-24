@@ -1,14 +1,16 @@
 class PostsController < ApplicationController
+  before_action :authenticate_user!
+
   def index
     @post = Post.new
     @posts = Post
       .where(user: current_user.following + [ current_user ])
       .order(created_at: :desc)
-      .includes(:user, :likes, :comments)
+      .includes(:user, likes: [], comments: [:user])
   end
 
   def show
-    @post = Post.includes(:comments, :user).find(params[:id])
+    @post = Post.includes(:user, comments: [:user]).find(params[:id])
     @comment = Comment.new
   end
 
@@ -21,7 +23,7 @@ class PostsController < ApplicationController
       @posts = Post
         .where(user: current_user.following + [ current_user ])
         .order(created_at: :desc)
-        .includes(:user, :likes, :comments)
+        .includes(:user, likes: [], comments: [:user])
 
       render :index, status: :unprocessable_entity
     end

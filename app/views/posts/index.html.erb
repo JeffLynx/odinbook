@@ -20,9 +20,40 @@
 
       <small>
         <%= time_ago_in_words(post.created_at) %> ago
-        <%= pluralize(post.likes.size, "like") %>
-        <%= pluralize(post.comments.size, "comment") %>
+        <%= pluralize(post.likes.count, "like") %>
+        <%= pluralize(post.comments.count, "comment") %>
       </small>
+
+      <div>
+        <% if post.likes.exists?(user: current_user) %>
+          <% like = post.likes.find_by(user: current_user) %>
+          <%= button_to "Unlike", post_like_path(post, like), method: :delete %>
+        <% else %>
+          <%= button_to "Like", post_likes_path(post), method: :post %>
+        <% end %>
+      </div>
+
+      <div style="margin-top: 0.5rem;">
+        <% post.comments.limit(3).each do |comment| %>
+          <p style="margin: 0.2rem 0;">
+            <strong><%= comment.user.email %>:</strong>
+            <%= comment.body %>
+          </p>
+        <% end %>
+
+        <% if post.comments.count > 3 %>
+          <%= link_to "View all comments", post_path(post) %>
+        <% end %>
+      </div>
+
+      <div style="margin-top: 0.5rem;">
+        <%= form_with model: [post, Comment.new] do |f| %>
+          <div>
+            <%= f.text_field :body, placeholder: "Write a comment..." %>
+          </div>
+          <%= f.submit "Comment" %>
+        <% end %>
+      </div>
     </article>
   <% end %>
 <% else %>

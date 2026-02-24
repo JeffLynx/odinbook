@@ -30,4 +30,21 @@ class User < ApplicationRecord
     -> { where(follows: { status: :accepted }) },
     through: :received_follows,
     source: :follower
+
+  def follow(user)
+    sent_follows.create(followed: user)
+  end
+
+  def unfollow(user)
+    sent_follows.find_by(followed: user)&.destroy
+  end
+
+  def following?(user)
+    following.include?(user)
+  end
+
+  def requested_follow?(user)
+    sent_follows.exists?(followed: user, status: :pending)
+  end
 end
+

@@ -7,6 +7,11 @@ class PostsController < ApplicationController
       .includes(:user, :likes, :comments)
   end
 
+  def show
+    @post = Post.includes(:comments, :user).find(params[:id])
+    @comment = Comment.new
+  end
+
   def create
     @post = current_user.posts.build(post_params)
 
